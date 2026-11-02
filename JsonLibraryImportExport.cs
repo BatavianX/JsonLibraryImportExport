@@ -115,7 +115,33 @@ namespace JsonLibraryImportExport
 
         public override void OnApplicationStarted(OnApplicationStartedEventArgs args)
         {
-            // Add code to be executed when Playnite is initialized.
+            string masterPath = @"X:\Playnite\games.json";
+        
+            try
+            {
+                if (!File.Exists(masterPath))
+                {
+                    logger.Warn("Master JSON tidak ditemukan.");
+                    return;
+                }
+        
+                var importer =
+                    new JsonLibraryImportExportViewModel(
+                        PlayniteApi,
+                        settings
+                    );
+        
+                importer.Import(
+                    masterPath,
+                    PlayniteApi.Database.Games
+                );
+        
+                logger.Info("Auto Import berhasil.");
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Auto Import gagal: " + ex);
+            }
         }
 
         public override void OnApplicationStopped(OnApplicationStoppedEventArgs args)
